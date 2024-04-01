@@ -39,8 +39,8 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 
 flatpak install -y --noninteractive flathub org.kicad.KiCad
 flatpak install -y --noninteractive flathub org.inkscape.Inkscape
-#flatpak install -y --noninteractive flathub com.obsproject.Studio
-flatpak install -y --noninteractive flathub com.vscodium.codium
+flatpak install -y --noninteractive flathub com.obsproject.Studio
+#flatpak install -y --noninteractive flathub com.vscodium.codium
 flatpak install -y --noninteractive flathub io.github.shiftey.Desktop
 flatpak install -y --noninteractive flathub com.logseq.Logseq
 flatpak install -y --noninteractive flathub org.freecadweb.FreeCAD
