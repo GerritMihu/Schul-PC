@@ -65,6 +65,10 @@ sudo chsh -s $(which zsh) $(whoami)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 echo "./zshrc sollte noch bearbeitet werden"
 
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
+
+
 #install nvim
 sudo apt remove -y neovim
 sudo apt install -y ninja-build gettext cmake unzip curl
