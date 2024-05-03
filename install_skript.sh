@@ -13,7 +13,7 @@ echo "user mit su - && usermod -aG sudo USERNAME in die sudoers datei hinzufüge
 sudo apt update -y
 sudo apt upgrade -y
 
-sudo apt install -y openscad docker python3-full python3-venv tmux ripgrep gcc make wget htop fzf vim curl git zsh fonts-hack-ttf
+sudo apt install -y openscad docker.io python3-full python3-venv tmux ripgrep gcc make wget htop fzf vim curl git zsh fonts-hack-ttf
 flatpak install -y --noninteractive flathub 
 
 #why so serious?
@@ -25,7 +25,7 @@ sudo chmod a+rx /usr/local/bin/unimatrix
 sudo apt install -y cifs-utils nfs-common
 
 
-#epoptes für Schulp
+#epoptes für Schulpc
 sudo apt install -y epoptes-client
 #epoptes Einrichtung kommt hier noch
 
@@ -48,9 +48,8 @@ flatpak install -y --noninteractive flathub com.github.IsmaelMartinez.teams_for_
 flatpak install -y --noninteractive flathub org.raspberrypi.rpi-imager
 flatpak install -y --noninteractive flathub org.fritzing.Fritzing
 flatpak install -y --noninteractive flathub com.visualstudio.code
+flatpak install -y --noninteractive flathub io.podman_desktop.PodmanDesktop
 
-#Kicost
-sudo pipx install kicost # Install KiCost from PyPI.
 
 #udev.rules für Platformio
 curl -fsSL https://raw.githubusercontent.com/platformio/platformio-core/develop/platformio/assets/system/99-platformio-udev.rules | sudo tee /etc/udev/rules.d/99-platformio-udev.rules
