@@ -14,7 +14,6 @@ sudo apt update -y
 sudo apt upgrade -y
 
 sudo apt install -y openscad docker.io python3-full python3-venv tmux ripgrep gcc make wget htop fzf vim curl git zsh fonts-hack-ttf
-flatpak install -y --noninteractive flathub 
 
 #why so serious?
 sudo apt install -y neofetch cowsay fortune cmatrix vlc
@@ -27,8 +26,9 @@ sudo apt install -y cifs-utils nfs-common
 
 #epoptes für Schulpc
 sudo apt install -y epoptes-client
-#epoptes Einrichtung kommt hier noch
-
+sudo sed -i 's/#SERVER=server/SERVER=B038teac.htl-steyr.ac.at/g' /etc/default/epoptes-client
+sudo epoptes-client -c
+sudo epoptes-client
 
 
 #flathub als repository hinzufügen
@@ -64,6 +64,9 @@ sudo chsh -s $(which zsh) $(whoami)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 echo "./zshrc sollte noch bearbeitet werden"
 
+
+#powerlevel10k als default layout
+sudo curl -o /usr/local/share/fonts/m/MesloLGS_NF_Regular.ttf  https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
 echo 'source ~/powerlevel10k/powerlevel10k.zsh-theme' >>~/.zshrc
 
@@ -83,3 +86,15 @@ sudo dpkg -i --force-overwrite nvim-linux64.deb
 
 #NvChad als skin für neovim
 git clone https://github.com/NvChad/starter ~/.config/nvim && nvim
+
+
+
+sudo docker pull ghcr.io/inti-cmnb/kicad8_auto_full:dev_1.7.1-dcc8512_k8.0.2_d_sid_b3.5.1
+sudo docker run -it ghcr.io/inti-cmnb/kicad8_auto_full:dev_1.7.1-dcc8512_k8.0.2_d_sid_b3.5.1
+#		- nun sind wir im container auf der cli
+#		- kibot-check zum bestätigen ob alles korrekt funktioniert
+#		- git pull ein Kicad-projekt
+#		- cd ins projekt
+#		- kibot --quick-start legt die Dateien mit der  Beispielconfig ab
+#		- docker cp zum kopieren der datei in das host system
+#		  =======
