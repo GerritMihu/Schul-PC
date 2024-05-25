@@ -17,7 +17,7 @@ sudo apt install -y openscad docker.io python3-full python3-venv tmux ripgrep gc
 flatpak install -y --noninteractive flathub 
 
 #why so serious?
-sudo apt install -y neofetch cowsay fortune cmatrix vlc
+sudo apt install -y neofetch cowsay fortune cmatrix vlc cbonsai lolcat cava
 sudo curl -L https://raw.githubusercontent.com/will8211/unimatrix/master/unimatrix.py -o /usr/local/bin/unimatrix
 sudo chmod a+rx /usr/local/bin/unimatrix
 
