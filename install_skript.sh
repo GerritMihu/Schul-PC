@@ -1,6 +1,6 @@
 #! /bin/bash
 
-echo "Hallo, hier kommt der Linux install skript0r!"
+echo "Hallo, hier kommt der Linux install skript!"
 
 echo "user mit su - && usermod -aG sudo USERNAME in die sudoers datei hinzufügen"
 
@@ -19,6 +19,11 @@ sudo apt install -y openscad docker.io python3-full python3-venv tmux ripgrep gc
 sudo apt install -y neofetch cowsay fortune cmatrix vlc cbonsai lolcat cava
 sudo curl -L https://raw.githubusercontent.com/will8211/unimatrix/master/unimatrix.py -o /usr/local/bin/unimatrix
 sudo chmod a+rx /usr/local/bin/unimatrix
+
+
+#yazi kitty usw..
+sudo apt install fd-find popper-utils 7zip zoxide
+
 
 #NAS Einrichtung
 sudo apt install -y cifs-utils nfs-common
@@ -91,6 +96,8 @@ git clone https://github.com/NvChad/starter ~/.config/nvim && nvim
 
 sudo docker pull ghcr.io/inti-cmnb/kicad8_auto_full:dev_1.7.1-dcc8512_k8.0.2_d_sid_b3.5.1
 sudo docker run -it ghcr.io/inti-cmnb/kicad8_auto_full:dev_1.7.1-dcc8512_k8.0.2_d_sid_b3.5.1
+
+
 #		- nun sind wir im container auf der cli
 #		- kibot-check zum bestätigen ob alles korrekt funktioniert
 #		- git pull ein Kicad-projekt
