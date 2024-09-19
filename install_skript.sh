@@ -22,11 +22,26 @@ sudo chmod a+rx /usr/local/bin/unimatrix
 
 
 #yazi kitty usw..
-sudo apt install fd-find popper-utils 7zip zoxide
+sudo apt install fd-find popper-utils 7zip zoxide kitty flameshot
 
 
 #NAS Einrichtung
 sudo apt install -y cifs-utils nfs-common
+
+#vscodium installieren
+
+#adding the GPG key of the repository:
+wget -qO - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \
+    | gpg --dearmor \
+    | sudo dd of=/usr/share/keyrings/vscodium-archive-keyring.gpg
+
+#adding the repository:
+echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https://download.vscodium.com/debs vscodium main' \
+    | sudo tee /etc/apt/sources.list.d/vscodium.list
+
+#Update then install vscodium
+sudo apt update && sudo apt install codium
+
 
 
 #epoptes für Schulpc
@@ -94,8 +109,8 @@ git clone https://github.com/NvChad/starter ~/.config/nvim && nvim
 
 
 
-sudo docker pull ghcr.io/inti-cmnb/kicad8_auto_full:dev_1.7.1-dcc8512_k8.0.2_d_sid_b3.5.1
-sudo docker run -it ghcr.io/inti-cmnb/kicad8_auto_full:dev_1.7.1-dcc8512_k8.0.2_d_sid_b3.5.1
+# sudo docker pull ghcr.io/inti-cmnb/kicad8_auto_full:dev_1.7.1-dcc8512_k8.0.2_d_sid_b3.5.1
+# sudo docker run -it ghcr.io/inti-cmnb/kicad8_auto_full:dev_1.7.1-dcc8512_k8.0.2_d_sid_b3.5.1
 
 
 #		- nun sind wir im container auf der cli
