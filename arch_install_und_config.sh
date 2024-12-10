@@ -30,6 +30,7 @@ yay -S --noconfirm oh-my-posh
 # system programme
 
 sudo pacman -S --noconfirm --needed docker podman flatpak
+sudo usermod -aG docker $USER
 
 
 #nas freigaben
