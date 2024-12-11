@@ -45,7 +45,7 @@ flatpak install -y logseq
 
 
 # cad, electronic 
-sudo pacman -S --noconfirm --needed kicad freecad
+sudo pacman -S --noconfirm --needed kicad freecad blender openscad
 # if you want to install the official libraries (recommended):
 sudo pacman -Syu --asdeps kicad-library kicad-library-3d
 # --asdeps installiert die packete als dependensies das bedeutet sie werden bei der deinstallation mit gelöscht
