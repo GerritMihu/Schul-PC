@@ -40,7 +40,7 @@ sudo pacman -S --noconfirm --needed gvfs gvfs-smb
 yay -S ventoy-bin --noconfirm
 
 # allgemeine Programme
-sudo pacman -S --noconfirm --needed firefox krita libreoffice obs-studio inkscape openscad
+sudo pacman -S --noconfirm --needed firefox krita libreoffice obs-studio inkscape powertop
 flatpak install -y logseq
 
 
@@ -56,7 +56,7 @@ yay -S kibot --noconfirm
 # programmieren, raspberry, microcontrollers...
 
 
-sudo pacman -S --noconfirm --needed arduino code rpi-imager podmandesktop
+sudo pacman -S --noconfirm --needed arduino code rpi-imager podmandesktop lazygit avrdude
 
 # damit die vs-code extentions auch da sind
 yay -S --noconfirm code-marketplace
@@ -65,7 +65,7 @@ yay -S --noconfirm code-marketplace
 #gnome keyring für error in Github-desktop-bin davor installieren
 sudo pacman -S --noconfirm --needed gnome-keyring
 
-yay -S --noconfirm github-desktop-bin
+yay -S --noconfirm github-desktop-bin balena-etcher
 
 
 #nicht wichtiges
