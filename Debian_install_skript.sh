@@ -44,7 +44,22 @@ echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https:/
 #Update then install vscodium
 sudo apt update && sudo apt install codium
 
+#Prequisits für ESPressif-IDF
+sudo apt-get install git wget flex bison gperf python3 python3-pip python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0
 
+#ESP-IDF holen
+mkdir -p ~/esp
+cd ~/esp
+git clone --recursive https://github.com/espressif/esp-idf.git
+
+#ESP-IDF mit allen Chips installieren
+cd ~/esp/esp-idf
+./install.sh all
+
+#set Variables from Home
+. $HOME/esp/esp-idf/export.sh
+
+cd
 
 #epoptes für Schulpc
 sudo apt install -y epoptes-client
