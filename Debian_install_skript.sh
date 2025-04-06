@@ -13,6 +13,8 @@ echo "user mit su - && usermod -aG sudo USERNAME in die sudoers datei hinzufüge
 sudo apt update -y
 sudo apt upgrade -y
 
+sudo apt install -y kde-full
+
 sudo apt install -y openscad docker.io python3-full python3-venv tmux ripgrep gcc make wget htop fzf vim curl git zsh fonts-hack-ttf
 
 #why so serious?
