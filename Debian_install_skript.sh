@@ -137,3 +137,39 @@ git clone https://github.com/NvChad/starter ~/.config/nvim && nvim
 #		- kibot --quick-start legt die Dateien mit der  Beispielconfig ab
 #		- docker cp zum kopieren der datei in das host system
 #		  =======
+
+
+echo # Install Prerequisites
+
+sudo apt-get install git wget flex bison gperf python3 python3-pip python3-setuptools cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0
+
+echo # Install pipx
+
+sudo apt install pipx
+
+echo # Upgrade und Update
+
+sudo apt uprgade
+sudo apt update
+
+echo # Install python 3
+
+sudo apt install python3
+
+echo # Install udev
+
+sudo apt install udev
+
+echo # Plugin fuer ESP_TOOL in VS Code installieren
+
+echo # Adding user to dialout
+
+sudo usermod -a -G dialout $USER
+
+echo # Install github project
+
+git clone 'https://github.com/Circuit-Digest/ESP-Drone'
+
+echo # Install esptool
+
+pipx install esptool
