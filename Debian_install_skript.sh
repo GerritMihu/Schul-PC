@@ -12,6 +12,8 @@
 set -e  # Beendet das Skript sofort, wenn ein Fehler auftritt
 set -u  # Beendet das Skript, wenn eine Variable nicht definiert ist
 
+set -euo pipefail
+
 # Farben für Output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -78,7 +80,7 @@ sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup.$(date +%Y%m%d)
 # Backports enthalten neuere Softwareversionen für stabile Debian-Versionen.
 log "Füge Debian Backports hinzu"
 if ! grep -q "backports" /etc/apt/sources.list; then
-  sudo sed -i '/^deb.*main$/a deb http://deb.debian.org/debian bookworm-backports main' /etc/apt/sources.list
+  sudo sed -i '/^deb.*main$/a deb http://deb.debian.org/debian trixie-backports main' /etc/apt/sources.list
   log "Backports hinzugefügt"
 else
   log "Backports bereits vorhanden"
@@ -129,6 +131,7 @@ log "Installiere Systemtools"
 sudo apt install -y \
     tmux \
     htop \
+    btop \
     ripgrep \
     fd-find \
     fzf \
@@ -154,7 +157,7 @@ sudo apt install -y cifs-utils nfs-common
 # Fun-Pakete
 log "Installiere Fun-Pakete"
 sudo apt install -y \
-    neofetch \
+    fastfetch \
     cowsay \
     fortune \
     cmatrix \
@@ -294,6 +297,66 @@ if command -v epoptes-client &> /dev/null; then
     sudo systemctl enable epoptes-client
 fi
 
+
+ARCH_DEB=""
+ARCH="$(uname -m)"
+case "$ARCH" in
+  x86_64) ARCH_DEB="amd64" ;;
+  aarch64|arm64) ARCH_DEB="arm64" ;;
+  *) echo "Nicht unterstützte Architektur: $ARCH"; exit 1 ;;
+esac
+
+if [ "$(id -u)" -ne 0 ]; then
+  echo "Bitte als root ausführen (sudo bash install_sunshine_trixie.sh)."
+  exit 1
+fi
+
+echo "[1/5] apt aktualisieren …"
+apt update -y
+apt install -y wget ca-certificates
+
+# KDE-spezifische Pakete für Audio/Video
+apt install -y pipewire wireplumber libva2 libva-drm2 libva-x11-2 mesa-va-drivers \
+               xdg-utils || true
+
+DEB_NAME="sunshine-debian-trixie-${ARCH_DEB}.deb"
+DL_URL="https://github.com/LizardByte/Sunshine/releases/latest/download/${DEB_NAME}"
+
+echo "[2/5] Lade Sunshine …"
+wget -O "/tmp/${DEB_NAME}" "${DL_URL}"
+
+echo "[3/5] Installiere Sunshine …"
+apt install -y "/tmp/${DEB_NAME}" || (apt -f install -y && apt install -y "/tmp/${DEB_NAME}")
+
+SERVICE_PATH="/etc/systemd/system/sunshine.service"
+echo "[4/5] Autostart konfigurieren …"
+
+if ! systemctl list-unit-files | grep -q "^sunshine.service"; then
+  cat > "${SERVICE_PATH}" <<'EOF'
+[Unit]
+Description=Sunshine - Moonlight GameStream Host
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/sunshine
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  chmod 644 "${SERVICE_PATH}"
+  systemctl daemon-reload
+fi
+
+systemctl enable sunshine.service
+systemctl start sunshine.service
+
+echo "[5/5] Fertig!"
+
+
+
 # Flatpak Setup
 log "Installiere Flatpak und Flathub"
 sudo apt install -y flatpak plasma-discover-backend-flatpak
@@ -311,7 +374,6 @@ FLATPAK_APPS=(
     "com.github.IsmaelMartinez.teams_for_linux"
     "org.raspberrypi.rpi-imager"
     "org.fritzing.Fritzing"
-    "com.visualstudio.code"
     "io.podman_desktop.PodmanDesktop"
     "org.flameshot.Flameshot"
     "org.stellarium.Stellarium"
@@ -322,6 +384,56 @@ for app in "${FLATPAK_APPS[@]}"; do
     log "Installiere $app"
     flatpak install -y --noninteractive flathub "$app" || warning "Installation von $app fehlgeschlagen"
 done
+
+# VSCODE install
+# Install dependencies
+sudo apt install -y curl apt-transport-https gpg
+
+# Create directory if it doesn't exist
+sudo mkdir -p /usr/share/keyrings
+
+curl -s https://packages.microsoft.com/keys/microsoft.asc \
+  | gpg --dearmor \
+  | sudo tee /usr/share/keyrings/microsoft-archive-keyring.gpg > /dev/null
+
+# VSCode repository
+echo "deb [signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/vscode stable main" \
+  | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+
+# Update package list
+sudo apt update
+
+# Install VSCode
+sudo apt install -y code
+
+# Wait for code command to be available
+sleep 3
+
+# Install extensions with error handling
+extensions=(
+    "ms-python.python"
+    "ms-vscode.cpptools"
+    "platformio.platformio-ide"
+    "donjayamanne.python-extension-pack"
+    "raspberry-pi.raspberry-pi-pico"
+    "kingwampy.raspberrypi-sync"
+    "ms-azuretools.vscode-docker"
+    "docker.docker"
+    "ryu1kn.text-marker"
+    "ms-vscode-remote.remote-containers"
+    "esbenp.prettier-vscode"
+    "dbaeumer.vscode-eslint"
+    "editorconfig.editorconfig"
+    "unthrottled.doki-theme"
+)
+
+for extension in "${extensions[@]}"; do
+    echo "Installing extension: $extension"
+    code --force --install-extension "$extension" || echo "Failed to install: $extension"
+done
+
+echo "VSCode installation completed!"
+
 
 # Arduino CLI Setup für ESP32, ATMEGA, ATTiny, RP2040
 log "Konfiguriere Arduino CLI für alle MCU-Plattformen"
