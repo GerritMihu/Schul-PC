@@ -3,14 +3,14 @@
 # Dieses Skript richtet einen Debian-PC für den Unterricht in Elektronik und IT ein.
 # Es installiert alle nötigen Tools, Entwicklungsumgebungen und Konfigurationen.
 # Debian Schul-PC Installationsskript
-# Autor: [Dein Name]
-# Version: 1.0
+# Autor: Gerrit Mitterhuemer
+# Version: 1.
 # Datum: $(date +%Y-%m-%d)
 
 
 
-set -e  # Beendet das Skript sofort, wenn ein Fehler auftritt
-set -u  # Beendet das Skript, wenn eine Variable nicht definiert ist
+set -e # Beendet das Skript sofort, wenn ein Fehler auftritt
+set -u # Beendet das Skript, wenn eine Variable nicht definiert ist
 
 set -euo pipefail
 
@@ -24,30 +24,30 @@ NC='\033[0m' # No Color
 
 # Funktion für grüne Log-Ausgaben mit Zeitstempel
 log() {
-  echo -e "${GREEN}[$(date '+%Y-%m-%d %H:%M:%S')] $1${NC}"
+  echo -e "${GREEN}[$(date '+%Y-%m-%d %H:%M:%S')] $1${NC}"
 }
 
 # Funktion für rote Fehlermeldungen
 error() {
-  echo -e "${RED}[ERROR] $1${NC}" >&2
+  echo -e "${RED}[ERROR] $1${NC}" >&2
 }
 
 # Funktion für gelbe Warnungen
 warning() {
-  echo -e "${YELLOW}[WARNING] $1${NC}"
+  echo -e "${YELLOW}[WARNING] $1${NC}"
 }
 
 # Sicherheitsprüfung: Skript darf NICHT als root ausgeführt werden
 if [[ $EUID -eq 0 ]]; then
-  error "Dieses Script sollte nicht als root ausgeführt werden!"
-  exit 1
+  error "Dieses Script sollte nicht als root ausgeführt werden!"
+  exit 1
 fi
 
 # Prüfen, ob der Benutzer sudo-Rechte hat (wichtig für alle Installationen)
 if ! sudo -n true 2>/dev/null; then
-  error "User hat keine sudo-Berechtigung. Bitte erst sudo-Berechtigung einrichten:"
-  echo "su - && usermod -aG sudo $USER"
-  exit 1
+  error "User hat keine sudo-Berechtigung. Bitte erst sudo-Berechtigung einrichten:"
+  echo "su - && usermod -aG sudo $USER"
+  exit 1
 fi
 
 
@@ -59,13 +59,13 @@ log "Erstelle Timeshift Snapshot vor der Installation"
 
 # Falls Timeshift noch nicht installiert ist, wird es jetzt installiert
 if ! command -v timeshift &> /dev/null; then
-  sudo apt install -y timeshift
+  sudo apt install -y timeshift
 fi
 
 # Snapshot mit aktuellem Datum/Uhrzeit benennen
-SNAPSHOT_NAME="pre-install-$(date +%Y%m%d_%H%M)"
-sudo timeshift --create --comments "$SNAPSHOT_NAME" --tags D
-log "Snapshot $SNAPSHOT_NAME erstellt"
+# SNAPSHOT_NAME="pre-install-$(date +%Y%m%d_%H%M)"
+# sudo timeshift --create --comments "$SNAPSHOT_NAME" --tags D
+# log "Snapshot $SNAPSHOT_NAME erstellt"
 
 
 log "Debian Schul-PC Installationsskript gestartet"
@@ -80,10 +80,10 @@ sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup.$(date +%Y%m%d)
 # Backports enthalten neuere Softwareversionen für stabile Debian-Versionen.
 log "Füge Debian Backports hinzu"
 if ! grep -q "backports" /etc/apt/sources.list; then
-  sudo sed -i '/^deb.*main$/a deb http://deb.debian.org/debian trixie-backports main' /etc/apt/sources.list
-  log "Backports hinzugefügt"
+  sudo sed -i '/^deb.*main$/a deb http://deb.debian.org/debian trixie-backports main' /etc/apt/sources.list
+  log "Backports hinzugefügt"
 else
-  log "Backports bereits vorhanden"
+  log "Backports bereits vorhanden"
 fi
 
 # 🔄 System aktualisieren
@@ -97,53 +97,26 @@ sudo apt upgrade -y
 # 🧱 Installation von Basis-Paketen
 # Diese Pakete sind grundlegend für viele weitere Installationen und Funktionen.
 log "Installiere Basis-Pakete"
-sudo apt install -y \
-    apt-transport-https \  # Ermöglicht den Paketdownload über HTTPS
-    ca-certificates \      # Zertifikate für sichere Verbindungen
-    gnupg \                # GPG für Paketverifizierung
-    lsb-release \          # Informationen zur Distribution (z. B. für Repos)
-    curl \                 # Tool zum Herunterladen von Dateien über HTTP/S
-    wget \                 # Alternative zu curl
-    git                    # Versionsverwaltungssystem für Quellcode
+sudo apt install -y apt-transport-https ca-certificates gnupg lsb-release curl wget git
 
 # 🖥️ KDE Desktop Environment
 # KDE ist eine grafische Benutzeroberfläche mit vielen Tools – ideal für Schul-PCs.
 log "Installiere KDE Desktop Environment"
-sudo apt install -y kde-standard
+sudo apt install -y kde-full
 
 # 🛠️ Entwicklungstools
 # Diese Tools werden für das Kompilieren, Programmieren und Entwickeln benötigt.
 log "Installiere Entwicklungstools"
-sudo apt install -y \
-    build-essential \      # Enthält gcc, g++, make – Grundausstattung für C/C++
-    cmake \                # Build-System für C/C++-Projekte
-    ninja-build \          # Schneller Build-Manager, oft für Embedded-Projekte
-    gcc \                  # GNU C Compiler
-    make \                 # Automatisierung von Kompilierungsschritten
-    git \                  # (erneut, falls vorher nicht installiert)
-    vim \                  # Texteditor für die Konsole
-    python3-full \         # Vollständige Python 3-Installation
-    python3-venv \         # Virtuelle Umgebungen für Python-Projekte
-    python3-pip            # Paketmanager für Python
+sudo apt install -y build-essential cmake ninja-build gcc make git vim thonny python3-venv python3-pip
+# pipx installieren
+log "Installiere pipx"
+sudo apt install -y pipx
+pipx ensurepath
 
 # Systemtools
 log "Installiere Systemtools"
-sudo apt install -y \
-    tmux \
-    htop \
-    btop \
-    ripgrep \
-    fd-find \
-    fzf \
-    zsh \
-    kitty \
-    flameshot \
-    fonts-hack-ttf \
-    minicom \
-    screen \
-    picocom \
-    timeshift \
-    gtkterm
+sudo apt install -y tmux htop btop ssh ufw ripgrep fd-find fzf zsh kitty flameshot fonts-hack-ttf minicom screen picocom timeshift gtkterm filelight libreoffice  libreoffice-l10n-en-gb  mc
+
 
 # Container und Virtualisierung
 log "Installiere Docker"
@@ -152,7 +125,13 @@ sudo usermod -aG docker $USER
 
 # NAS-Tools
 log "Installiere NAS-Tools"
-sudo apt install -y cifs-utils nfs-common
+sudo apt install -y cifs-utils nfs-common samba syncthing
+sudo usermod -aG sambashare $USER
+
+
+# Netzwerktechnik
+log "Installiere Netzwerktechnik-Tools"
+sudo apt install -y zenmap wireshark
 
 # Fun-Pakete
 log "Installiere Fun-Pakete"
@@ -162,6 +141,7 @@ sudo apt install -y \
     fortune \
     cmatrix \
     vlc \
+    audacity \
     cbonsai \
     lolcat \
     cava
@@ -175,7 +155,7 @@ fi
 
 # Ricing-Tools
 log "Installiere Ricing-Tools"
-sudo apt install -y plank conky rofi
+sudo apt install -y plank conky-all rofi
 
 # VSCodium Repository und Installation
 log "Installiere VSCodium"
@@ -212,8 +192,8 @@ sudo apt install -y \
 # EDA (Electronic Design Automation) Tools
 log "Installiere EDA Tools"
 sudo apt install -y \
-    pcb-gtk \
-    gerbv \
+    veroroute \
+    rfdump \
     gtkwave \
     iverilog \
     verilator \
@@ -224,7 +204,13 @@ sudo apt install -y \
     octave \
     octave-signal \
     octave-control \
-    scilab
+    scilab \
+
+# Kicad
+log "Installiere Kicad"
+sudo apt install -y kicad kicad-demos  kicad-footprints  kicad-libraries  kicad-symbols  kicad-templates kicad-packages3d
+
+
 
 # Simulation und Analyse Tools
 log "Installiere Simulation Tools"
@@ -241,7 +227,6 @@ sudo apt install -y \
 log "Installiere Hardware-Debugging Tools"
 sudo apt install -y \
     gdb-multiarch \
-    gdb-arm-none-eabi \
     binutils-arm-none-eabi \
     gcc-arm-none-eabi \
     libnewlib-arm-none-eabi \
@@ -306,17 +291,17 @@ case "$ARCH" in
   *) echo "Nicht unterstützte Architektur: $ARCH"; exit 1 ;;
 esac
 
-if [ "$(id -u)" -ne 0 ]; then
-  echo "Bitte als root ausführen (sudo bash install_sunshine_trixie.sh)."
-  exit 1
-fi
+#if [ "$(id -u)" -ne 0 ]; then
+#  echo "Bitte als root ausführen (sudo bash install_sunshine_trixie.sh)."
+#  exit 1
+#fi
 
 echo "[1/5] apt aktualisieren …"
-apt update -y
-apt install -y wget ca-certificates
+sudo apt update -y
+sudo apt install -y wget ca-certificates
 
 # KDE-spezifische Pakete für Audio/Video
-apt install -y pipewire wireplumber libva2 libva-drm2 libva-x11-2 mesa-va-drivers \
+sudo apt install -y pipewire wireplumber libva2 libva-drm2 libva-x11-2 mesa-va-drivers \
                xdg-utils || true
 
 DEB_NAME="sunshine-debian-trixie-${ARCH_DEB}.deb"
@@ -326,13 +311,15 @@ echo "[2/5] Lade Sunshine …"
 wget -O "/tmp/${DEB_NAME}" "${DL_URL}"
 
 echo "[3/5] Installiere Sunshine …"
-apt install -y "/tmp/${DEB_NAME}" || (apt -f install -y && apt install -y "/tmp/${DEB_NAME}")
-
+sudo apt install -y "/tmp/${DEB_NAME}" || (apt -f install -y && apt install -y "/tmp/${DEB_NAME}")
+# Pfad definieren
 SERVICE_PATH="/etc/systemd/system/sunshine.service"
+
 echo "[4/5] Autostart konfigurieren …"
 
+# Überprüfen, ob der Dienst bereits existiert, falls nicht: Erstellen
 if ! systemctl list-unit-files | grep -q "^sunshine.service"; then
-  cat > "${SERVICE_PATH}" <<'EOF'
+sudo bash -c "cat > ${SERVICE_PATH}" << EOF
 [Unit]
 Description=Sunshine - Moonlight GameStream Host
 After=network.target
@@ -342,18 +329,23 @@ Type=simple
 ExecStart=/usr/bin/sunshine
 Restart=on-failure
 RestartSec=5s
+# Optional: Falls Sunshine als spezifischer User laufen soll (empfohlen)
+# User=DEIN_BENUTZERNAME
 
 [Install]
 WantedBy=multi-user.target
 EOF
-  chmod 644 "${SERVICE_PATH}"
-  systemctl daemon-reload
+
+sudo chmod 644 ${SERVICE_PATH}
+sudo systemctl daemon-reload
 fi
 
-systemctl enable sunshine.service
-systemctl start sunshine.service
+# Dienst aktivieren und sofort starten
+sudo systemctl enable sunshine.service
+sudo systemctl start sunshine.service
 
 echo "[5/5] Fertig!"
+
 
 
 
@@ -365,7 +357,6 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 # Flatpak-Anwendungen installieren
 log "Installiere Flatpak-Anwendungen"
 FLATPAK_APPS=(
-    "org.kicad.KiCad"
     "org.inkscape.Inkscape"
     "com.obsproject.Studio"
     "io.github.shiftey.Desktop"
@@ -375,8 +366,6 @@ FLATPAK_APPS=(
     "org.raspberrypi.rpi-imager"
     "org.fritzing.Fritzing"
     "io.podman_desktop.PodmanDesktop"
-    "org.flameshot.Flameshot"
-    "org.stellarium.Stellarium"
     "com.microsoft.Edge"
 )
 
@@ -466,6 +455,8 @@ if command -v arduino-cli &> /dev/null; then
 
     # MiniCore für ATmega48/88/168/328 serie
     arduino-cli core install MiniCore:avr
+    arduino-cli core install megaTinyCore:avr
+    arduino-cli core install megaTinyCore:megaavr
 
     log "Arduino CLI Boards konfiguriert:"
     arduino-cli board listall | grep -E "(esp32|avr|rp2040)"
@@ -474,6 +465,7 @@ fi
 # OpenOCD für Hardware-Debugging
 log "Konfiguriere OpenOCD"
 sudo usermod -a -G plugdev $USER
+sudo usermod -a -G dialout $USER
 
 # USB-Regeln für verschiedene Programmer/Debugger
 log "Installiere USB-Regeln für Hardware-Tools"
@@ -639,17 +631,7 @@ fi
 # Neovim von Source kompilieren
 log "Installiere Neovim"
 if ! command -v nvim &> /dev/null; then
-    sudo apt remove -y neovim || true
-    sudo apt install -y ninja-build gettext cmake unzip curl
-
-    cd /tmp
-    git clone https://github.com/neovim/neovim
-    cd neovim
-    make CMAKE_BUILD_TYPE=RelWithDebInfo
-    cd build
-    cpack -G DEB
-    sudo dpkg -i --force-overwrite nvim-linux64.deb
-    cd ~
+    sudo apt install -y ninja-build gettext cmake unzip curl neovim ctags vim-scripts
 fi
 
 # NvChad für Neovim
@@ -658,10 +640,7 @@ if [[ ! -d ~/.config/nvim ]]; then
     git clone https://github.com/NvChad/starter ~/.config/nvim
 fi
 
-# pipx installieren
-log "Installiere pipx"
-sudo apt install -y pipx
-pipx ensurepath
+
 
 # esptool installieren
 log "Installiere esptool"
