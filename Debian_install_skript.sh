@@ -467,6 +467,9 @@ log "Konfiguriere OpenOCD"
 sudo usermod -a -G plugdev $USER
 sudo usermod -a -G dialout $USER
 
+# Rechte für raspberrypi imager
+sudo usermod -a -G disk $USER
+
 # USB-Regeln für verschiedene Programmer/Debugger
 log "Installiere USB-Regeln für Hardware-Tools"
 
