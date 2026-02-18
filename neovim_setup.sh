@@ -8,6 +8,8 @@ PACKER_DIR="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
 
 echo "Starte Neovim-Einrichtung..."
 
+sudo apt install nvim git clang-format black
+
 # 1. Neovim Konfigurationsverzeichnis erstellen
 mkdir -p "$CONFIG_DIR"
 
