@@ -8,3 +8,9 @@ Openscad
 Freecad
 VSCODE
 usw...
+
+
+## Collection of skripts I might want to use
+
+Kibot
+PyVISA
